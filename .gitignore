@@ -1,0 +1,7 @@
+# MyST build outputs
+_build
+env/
+docs/_build/
+.DS_Store
+__pycache__/
+*.pyc
