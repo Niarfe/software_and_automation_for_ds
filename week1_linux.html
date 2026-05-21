@@ -1,0 +1,796 @@
+
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>The Linux Environment, Filesystem Navigation, and Text Manipulation &#8212; DS5111: Software and Automation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" href="_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/clipboard.min.js"></script>
+    <script src="_static/copybutton.js"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="_static/design-tabs.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="_static/sphinx-thebe.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'week1_linux';</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Software and Automation for Data Science" href="index.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">DS5111: Software and Automation</p>
+  
+</a></div>
+        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="index.html">
+                    Software and Automation for Data Science
+                </a>
+            </li>
+        </ul>
+        <ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">The Linux Environment, Filesystem Navigation, and Text Manipulation</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/week1_linux.md" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.md</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>The Linux Environment, Filesystem Navigation, and Text Manipulation</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-shell-environment-core-interpretation">1. The Shell Environment: Core Interpretation</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#verifying-program-paths-and-interpretation">Verifying Program Paths and Interpretation</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#filesystem-layout-and-navigation">2. Filesystem Layout and Navigation</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-core-directory-landscape">The Core Directory Landscape</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#navigating-the-maze-via-pwd-and-cd">Navigating the Maze via <code class="docutils literal notranslate"><span class="pre">pwd</span></code> and <code class="docutils literal notranslate"><span class="pre">cd</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#path-definitions-absolute-vs-relative">Path Definitions: Absolute vs. Relative</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#managing-files-and-directories">3. Managing Files and Directories</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#file-creation-duplication-and-erasure">File Creation, Duplication, and Erasure</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#option-modifiers-short-vs-long-configurations">Option Modifiers: Short vs. Long Configurations</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#stream-inspection-and-command-chaining">4. Stream Inspection and Command Chaining</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#interrogating-streams-cat-less-grep-sed-sort">Interrogating Streams: <code class="docutils literal notranslate"><span class="pre">cat</span></code>, <code class="docutils literal notranslate"><span class="pre">less</span></code>, <code class="docutils literal notranslate"><span class="pre">grep</span></code>, <code class="docutils literal notranslate"><span class="pre">sed</span></code>, <code class="docutils literal notranslate"><span class="pre">sort</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-pipe-operator">The Pipe Operator (<code class="docutils literal notranslate"><span class="pre">|</span></code>)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#step-by-step-stream-processing-and-data-transformation-examples">Step-by-Step Stream Processing and Data Transformation Examples</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#summary-command-reference-matrix">5. Summary Command Reference Matrix</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#terminal-editing-via-nano">6. Terminal Editing via Nano</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#core-structural-editing-rules">Core Structural Editing Rules</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#essential-key-bindings-for-file-management">Essential Key Bindings for File Management</a></li>
+</ul>
+</li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="the-linux-environment-filesystem-navigation-and-text-manipulation">
+<h1>The Linux Environment, Filesystem Navigation, and Text Manipulation<a class="headerlink" href="#the-linux-environment-filesystem-navigation-and-text-manipulation" title="Permalink to this heading">#</a></h1>
+<p>To build infrastructure, automation and pipelines, a data scientist must move beyond point-and-click graphical interfaces and closer to the metal. In production systems—whether cloud-based virtual machines, high-performance computing clusters, or automated continuous integration containers, the operational environment is almost exclusively the <strong>Linux Shell</strong>.</p>
+<p>This module provides a technical guide to navigating the Linux filesystem, manipulating files, searching and altering stream data using utility commands (<code class="docutils literal notranslate"><span class="pre">grep</span></code>, <code class="docutils literal notranslate"><span class="pre">sed</span></code>, <code class="docutils literal notranslate"><span class="pre">sort</span></code>), and editing configurations directly from the terminal via <code class="docutils literal notranslate"><span class="pre">nano</span></code>. Mastering these core utilities ensures that your automated pipelines run on a solid, reproducible foundation.</p>
+<hr class="docutils" />
+<section id="the-shell-environment-core-interpretation">
+<h2>1. The Shell Environment: Core Interpretation<a class="headerlink" href="#the-shell-environment-core-interpretation" title="Permalink to this heading">#</a></h2>
+<p>The command line interface is driven by a <strong>shell</strong>—a program that accepts keyboard input and passes those commands to the host operating system. Most Linux distributions provide the <strong>GNU bash</strong> (Bourne-Again SHell) engine as the default environment.</p>
+<p>When writing automation scripts or multi-step pipelines (such as a <code class="docutils literal notranslate"><span class="pre">Makefile</span></code>), it is vital to know exactly how the shell will interpret a command name. Commands typically fall into one of four distinct structural categories:</p>
+<ol class="arabic simple">
+<li><p><strong>Executable Programs:</strong> Compiled binaries (written in C, C++, or Go) or interpreted standalone scripts (Python, R, Bash) residing in system directories like <code class="docutils literal notranslate"><span class="pre">/bin</span></code> or <code class="docutils literal notranslate"><span class="pre">/usr/bin</span></code>.</p></li>
+<li><p><strong>Shell Builtins:</strong> Utilities integrated directly into the shell executable itself for speed and environment control (e.g., <code class="docutils literal notranslate"><span class="pre">cd</span></code>, <code class="docutils literal notranslate"><span class="pre">type</span></code>, <code class="docutils literal notranslate"><span class="pre">help</span></code>).</p></li>
+<li><p><strong>Shell Functions:</strong> Mini-scripts loaded directly into the shell environment.</p></li>
+<li><p><strong>Aliases:</strong> User-defined shorthand shortcuts mapped directly over existing commands.</p></li>
+</ol>
+<section id="verifying-program-paths-and-interpretation">
+<h3>Verifying Program Paths and Interpretation<a class="headerlink" href="#verifying-program-paths-and-interpretation" title="Permalink to this heading">#</a></h3>
+<p>To prevent unexpected pipeline failures—such as a system binary masking a local Python virtual environment executable—you must use verification utilities to audit your shell path behavior.</p>
+<ul class="simple">
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">type</span> <span class="pre">&lt;command&gt;</span></code></strong>: Displays how the shell interprets the specified command name.</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">which</span> <span class="pre">&lt;executable&gt;</span></code></strong>: Searches your local system <code class="docutils literal notranslate"><span class="pre">PATH</span></code> to find the exact location of a standalone executable binary.</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Auditing shell commands</span>
+$<span class="w"> </span><span class="nb">type</span><span class="w"> </span><span class="nb">cd</span>
+<span class="nb">cd</span><span class="w"> </span>is<span class="w"> </span>a<span class="w"> </span>shell<span class="w"> </span><span class="nb">builtin</span>
+
+$<span class="w"> </span><span class="nb">type</span><span class="w"> </span>ls
+ls<span class="w"> </span>is<span class="w"> </span>aliased<span class="w"> </span>to<span class="w"> </span><span class="sb">`</span>ls<span class="w"> </span>--color<span class="o">=</span>tty<span class="sb">`</span>
+
+$<span class="w"> </span><span class="nb">type</span><span class="w"> </span>cp
+cp<span class="w"> </span>is<span class="w"> </span>/bin/cp
+
+$<span class="w"> </span>which<span class="w"> </span>ls
+/bin/ls
+</pre></div>
+</div>
+<p><strong>NOTE:</strong></p>
+<p>The <code class="docutils literal notranslate"><span class="pre">which</span></code> command evaluates <strong>only</strong> standalone executable files listed within your environmental <code class="docutils literal notranslate"><span class="pre">$PATH</span></code> variable. It will return an error or empty output when evaluated against shell builtins or aliases.</p>
+<p>To see the contents of your <code class="docutils literal notranslate"><span class="pre">PATH</span></code> variable you can type <code class="docutils literal notranslate"><span class="pre">env</span></code>.  That will list all the shell variables.  Often there are too many and it makes searching cumbersome.  A good combination is <code class="docutils literal notranslate"><span class="pre">env</span> <span class="pre">|</span> <span class="pre">grep</span> <span class="pre">&lt;search</span> <span class="pre">string&gt;</span></code>, which in this case would be <code class="docutils literal notranslate"><span class="pre">env</span> <span class="pre">|</span> <span class="pre">grep</span> <span class="pre">PATH</span></code> and the output will be only the variables that have <code class="docutils literal notranslate"><span class="pre">PATH</span></code> in the name or value.</p>
+</section>
+</section>
+<hr class="docutils" />
+<section id="filesystem-layout-and-navigation">
+<h2>2. Filesystem Layout and Navigation<a class="headerlink" href="#filesystem-layout-and-navigation" title="Permalink to this heading">#</a></h2>
+<p>Unlike alternative operating systems that assign separate filesystem trees to distinct storage partitions or devices, Linux constructs a <strong>single hierarchical directory tree</strong>. All mounted hardware drives, remote network volumes, and virtual resources branch out from a solitary foundation root directory, denoted simply by a forward slash (<code class="docutils literal notranslate"><span class="pre">/</span></code>).</p>
+<section id="the-core-directory-landscape">
+<h3>The Core Directory Landscape<a class="headerlink" href="#the-core-directory-landscape" title="Permalink to this heading">#</a></h3>
+<p>When navigating the terminal, data pipelines regularly interact with a few crucial system paths:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">/bin</span></code> and <code class="docutils literal notranslate"><span class="pre">/usr/bin</span></code>: Storage locations for vital executable binaries and regular user applications.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">/etc</span></code>: The configuration hub of the system containing plain text configuration files.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">/var/log</span></code>: Active logs recording application errors and runtime execution histories.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">/tmp</span></code>: Transient, volatile workspace storage designed to clear automatically upon system reboots.</p></li>
+</ul>
+<p>Of these directories, two that are of immediate interest for you are <code class="docutils literal notranslate"><span class="pre">/bin</span></code> and <code class="docutils literal notranslate"><span class="pre">/usr/bin</span></code>.  This is where most executables will reside.  This comes in handy if you want to create your own executables.  Say for example you create a python script, make it executable, and name it <code class="docutils literal notranslate"><span class="pre">my_command</span></code>.  Simply copying the file to <code class="docutils literal notranslate"><span class="pre">/usr/bin</span></code> means that from any directory location henceforth, you can simply call your script with <code class="docutils literal notranslate"><span class="pre">prompt$&gt;</span> <span class="pre">my_command</span></code></p>
+</section>
+<section id="navigating-the-maze-via-pwd-and-cd">
+<h3>Navigating the Maze via <code class="docutils literal notranslate"><span class="pre">pwd</span></code> and <code class="docutils literal notranslate"><span class="pre">cd</span></code><a class="headerlink" href="#navigating-the-maze-via-pwd-and-cd" title="Permalink to this heading">#</a></h3>
+<p>To find your orientation inside this tree structure, the shell defines a conceptual <strong>current working directory</strong> representing the workspace folder you are currently standing in.</p>
+<ul class="simple">
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">pwd</span></code> (Print Working Directory):</strong> Outputs the precise absolute path of your current active location.</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">cd</span> <span class="pre">[path]</span></code> (Change Directory):</strong> Transitions your active context to a target path location. Calling <code class="docutils literal notranslate"><span class="pre">cd</span></code> without arguments defaults directly back to your secure user account <code class="docutils literal notranslate"><span class="pre">/home</span></code> partition.</p></li>
+</ul>
+<p><strong>NOTE:</strong></p>
+<p>On your aws instances, <code class="docutils literal notranslate"><span class="pre">cd</span></code> will take you back to your home directory.  Since the user of the machine is set to a default name of <code class="docutils literal notranslate"><span class="pre">ubuntu</span></code>, cd will take you to <code class="docutils literal notranslate"><span class="pre">/home/ubuntu</span></code>.  This folder is the starting point when you log in via ssh.</p>
+</section>
+<section id="path-definitions-absolute-vs-relative">
+<h3>Path Definitions: Absolute vs. Relative<a class="headerlink" href="#path-definitions-absolute-vs-relative" title="Permalink to this heading">#</a></h3>
+<p>When pathing parameters within code or automation suites, engineers must distinguish between absolute and relative path syntaxes:</p>
+<ul class="simple">
+<li><p><strong>Absolute Pathnames:</strong> Track location paths beginning explicitly from the system root (<code class="docutils literal notranslate"><span class="pre">/</span></code>) down through structural subfolders. They resolve identically regardless of your current terminal position. Example: <code class="docutils literal notranslate"><span class="pre">/usr/bin/python3</span></code>.</p></li>
+<li><p><strong>Relative Pathnames:</strong> Calculate paths using your active current directory as a starting reference point. They rely on two special tokens:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">.</span></code> (Single dot): Represents the current directory context.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">..</span></code> (Double dot): Represents the immediate parent directory context up one level.</p></li>
+</ul>
+</li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Changing directory using an absolute path</span>
+$<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>/usr/bin
+$<span class="w"> </span><span class="nb">pwd</span>
+/usr/bin
+
+<span class="c1"># Transitioning up one level to /usr using a relative parent path</span>
+$<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>..
+$<span class="w"> </span><span class="nb">pwd</span>
+/usr
+
+<span class="c1"># Returning to the previous active directory instantly using the directory shortcut</span>
+$<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>-
+/usr/bin
+</pre></div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="managing-files-and-directories">
+<h2>3. Managing Files and Directories<a class="headerlink" href="#managing-files-and-directories" title="Permalink to this heading">#</a></h2>
+<p>The shell provides a core suite of management operations to safely handle files and folders.</p>
+<section id="file-creation-duplication-and-erasure">
+<h3>File Creation, Duplication, and Erasure<a class="headerlink" href="#file-creation-duplication-and-erasure" title="Permalink to this heading">#</a></h3>
+<ul class="simple">
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">touch</span> <span class="pre">&lt;filename&gt;</span></code></strong>: Updates file modification timestamps or instantly generates a blank, empty file if the specified name does not exist.</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">mkdir</span> <span class="pre">&lt;directory&gt;</span></code></strong>: Provisions a new subdirectory folder. Passing the <code class="docutils literal notranslate"><span class="pre">-p</span></code> (parents) option forces the command to systematically generate an entire missing parent nested folder architecture without throwing errors.</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">cp</span> <span class="pre">&lt;source&gt;</span> <span class="pre">&lt;destination&gt;</span></code></strong>: Replicates a file copy from a source to a target destination.</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">mv</span> <span class="pre">&lt;source&gt;</span> <span class="pre">&lt;destination&gt;</span></code></strong>: Displaces or renames files or directories. After execution, the source reference token ceases to exist.</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">rm</span> <span class="pre">&lt;target&gt;</span></code></strong>: Permanently destroys file and directory allocations from the index filesystem.</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Examples:</span>
+
+<span class="c1"># Create two nested directories in your home directory</span>
+<span class="c1"># ~ is shorthand for &#39;home&#39;, i.e. /home/ubuntu</span>
+$<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>~<span class="w"> </span>
+<span class="c1"># -p allows creation of subdirectories</span>
+<span class="c1"># note how you can create two directories in the same call</span>
+$<span class="w"> </span>mkdir<span class="w"> </span>-p<span class="w"> </span>pipeline/data/raw<span class="w"> </span>pipeline/data/processed<span class="w"> </span>
+$<span class="w"> </span>ls<span class="w"> </span>pipeline/data/
+raw
+processed
+
+<span class="c1"># Copying a file</span>
+$<span class="w"> </span>cp<span class="w"> </span>pipeline/data/raw/source_metrics.csv<span class="w"> </span>pipeline/data/processed/stage_v1.csv
+</pre></div>
+</div>
+<p><strong>NOTE:</strong></p>
+<p>Leverage autocomplete.  This is one of the underutilized yet most helpful features when starting with the command line.  In the example above, you don’t have to type every character, which leads to errors.  If you simply type <code class="docutils literal notranslate"><span class="pre">cp</span> <span class="pre">pipe</span></code> and then hit the <code class="docutils literal notranslate"><span class="pre">TAB</span></code> key, the CLI will auto complete, and you’ll be at <code class="docutils literal notranslate"><span class="pre">cp</span> <span class="pre">pipeline/</span></code>, then start typing <code class="docutils literal notranslate"><span class="pre">da</span></code>, as in <code class="docutils literal notranslate"><span class="pre">cp</span> <span class="pre">pipeline/da</span></code> and hit <code class="docutils literal notranslate"><span class="pre">TAB</span></code> again, and you’ll get <code class="docutils literal notranslate"><span class="pre">cp</span> <span class="pre">pipeline/data/</span></code>.  If you don’t, hit <code class="docutils literal notranslate"><span class="pre">TAB</span> <span class="pre">TAB</span></code> and it will show you option.  It often pauses because there may be more than one option.  <strong>However</strong> the real power comes in when it refuses to autocomplete because you have a typo!</p>
+</section>
+<section id="option-modifiers-short-vs-long-configurations">
+<h3>Option Modifiers: Short vs. Long Configurations<a class="headerlink" href="#option-modifiers-short-vs-long-configurations" title="Permalink to this heading">#</a></h3>
+<p>Linux utilities alter execution characteristics through parameters called <strong>options</strong> (or flags). Single-character options are flagged using a single dash (<code class="docutils literal notranslate"><span class="pre">-l</span></code>), whereas descriptive long options rely on double dashes (<code class="docutils literal notranslate"><span class="pre">--all</span></code>). Short options can be chained together tightly behind a single dash modifier.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Listing files using separate flags: long-format (-l), reveal hidden (-a), human-readable sizes (-h)</span>
+$<span class="w"> </span>ls<span class="w"> </span>-l<span class="w"> </span>-a<span class="w"> </span>-h
+
+<span class="c1"># Chaining identical configurations together cleanly</span>
+$<span class="w"> </span>ls<span class="w"> </span>-lah
+</pre></div>
+</div>
+<p><strong>WARNING!</strong></p>
+<p><strong>The Irreversible Nature of <code class="docutils literal notranslate"><span class="pre">rm</span></code>:</strong> Linux operating systems lack a fallback recovery bin or “trash can” layer. Once an entity is expunged via <code class="docutils literal notranslate"><span class="pre">rm</span></code>, its pointer block is immediately freed. To minimize destruction when utilizing wildcards (<code class="docutils literal notranslate"><span class="pre">*</span></code>), append the <code class="docutils literal notranslate"><span class="pre">-i</span></code> (interactive) flag to enforce confirmation prompts, or execute an exploratory <code class="docutils literal notranslate"><span class="pre">ls</span></code> run first to audit matches before substituting the file removal command.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># THE TRAP: An accidental space in a wildcard pattern deletes everything!</span>
+<span class="c1"># You meant to type `rm *.csv` but...</span>
+$<span class="w"> </span>rm<span class="w"> </span>*<span class="w"> </span>.csv<span class="w">       </span><span class="c1"># Clears all files in workspace, then errors on the string &#39;.csv&#39;</span>
+<span class="w">                  </span>
+<span class="c1"># THE SAFE METHOD: Forcing safety validations</span>
+$<span class="w"> </span>rm<span class="w"> </span>-i<span class="w"> </span>*.csv
+rm:<span class="w"> </span>remove<span class="w"> </span>regular<span class="w"> </span>file<span class="w"> </span><span class="s1">&#39;stage_v1.csv&#39;</span>?<span class="w"> </span>y
+</pre></div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="stream-inspection-and-command-chaining">
+<h2>4. Stream Inspection and Command Chaining<a class="headerlink" href="#stream-inspection-and-command-chaining" title="Permalink to this heading">#</a></h2>
+<p>Data parsing pipelines frequently manipulate stream records directly within standard inputs and outputs. The output streams of separate independent tools can be joined seamlessly to create compound filters without generating intermediary file allocations.</p>
+<section id="interrogating-streams-cat-less-grep-sed-sort">
+<h3>Interrogating Streams: <code class="docutils literal notranslate"><span class="pre">cat</span></code>, <code class="docutils literal notranslate"><span class="pre">less</span></code>, <code class="docutils literal notranslate"><span class="pre">grep</span></code>, <code class="docutils literal notranslate"><span class="pre">sed</span></code>, <code class="docutils literal notranslate"><span class="pre">sort</span></code><a class="headerlink" href="#interrogating-streams-cat-less-grep-sed-sort" title="Permalink to this heading">#</a></h3>
+<ul class="simple">
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">cat</span> <span class="pre">&lt;file&gt;</span></code></strong>: Concatenates and dumps the absolute raw contents of text data directly onto the active screen terminal interface.</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">less</span> <span class="pre">&lt;file&gt;</span></code></strong>: A memory-efficient paging engine that permits controlled bidirectional line and page scrolling across dense files without loading the entire dataset into memory allocations.</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">grep</span> <span class="pre">'&lt;pattern&gt;'</span> <span class="pre">&lt;file&gt;</span></code></strong>: Evaluates global regular expression inputs to scan lines matching precise textual strings.</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">sed</span> <span class="pre">'s/&lt;target&gt;/&lt;replacement&gt;/g'</span> <span class="pre">&lt;file&gt;</span></code></strong>: The stream editor engine used to rapidly run inline find-and-replace text modifications across input records.</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">sort</span></code></strong>: Evaluates lines alphabetically or numerically to reorganize unordered stream data.</p></li>
+</ul>
+</section>
+<section id="the-pipe-operator">
+<h3>The Pipe Operator (<code class="docutils literal notranslate"><span class="pre">|</span></code>)<a class="headerlink" href="#the-pipe-operator" title="Permalink to this heading">#</a></h3>
+<p>The terminal handles automation pipelines by routing standard stdout blocks directly into subsequent standard stdin evaluation streams via the <strong>pipe operator</strong> (<code class="docutils literal notranslate"><span class="pre">|</span></code>). This architecture supports high-performance analytics workflows directly in memory.</p>
+</section>
+<section id="step-by-step-stream-processing-and-data-transformation-examples">
+<h3>Step-by-Step Stream Processing and Data Transformation Examples<a class="headerlink" href="#step-by-step-stream-processing-and-data-transformation-examples" title="Permalink to this heading">#</a></h3>
+<p>Suppose you have an active raw log file named <code class="docutils literal notranslate"><span class="pre">server_metrics.log</span></code> containing messy execution histories. The following code blocks demonstrate how to isolate, sort, clean, and count target data structures via command chaining:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Sample data view of server_metrics.log</span>
+$<span class="w"> </span>cat<span class="w"> </span>server_metrics.log
+<span class="m">2026</span>-05-10<span class="w"> </span><span class="o">[</span>ERROR<span class="o">]</span><span class="w"> </span>Database<span class="w"> </span>timeout<span class="w"> </span>occurred<span class="w"> </span>on<span class="w"> </span>connection<span class="w"> </span>pool<span class="w"> </span>alpha
+<span class="m">2026</span>-05-10<span class="w"> </span><span class="o">[</span>INFO<span class="o">]</span><span class="w"> </span>User<span class="w"> </span>session<span class="w"> </span>initialized<span class="w"> </span><span class="k">for</span><span class="w"> </span>UID<span class="w"> </span><span class="m">4021</span>
+<span class="m">2026</span>-05-10<span class="w"> </span><span class="o">[</span>WARNING<span class="o">]</span><span class="w"> </span>Disk<span class="w"> </span>allocation<span class="w"> </span>capacity<span class="w"> </span>exceeds<span class="w"> </span><span class="m">85</span>%<span class="w"> </span>on<span class="w"> </span>dev2
+<span class="m">2026</span>-05-10<span class="w"> </span><span class="o">[</span>ERROR<span class="o">]</span><span class="w"> </span>API<span class="w"> </span>endpoint<span class="w"> </span>timeout<span class="w"> </span>failure<span class="w"> </span>on<span class="w"> </span>resource<span class="w"> </span>fetch
+<span class="m">2026</span>-05-11<span class="w"> </span><span class="o">[</span>ERROR<span class="o">]</span><span class="w"> </span>Database<span class="w"> </span>timeout<span class="w"> </span>occurred<span class="w"> </span>on<span class="w"> </span>connection<span class="w"> </span>pool<span class="w"> </span>beta
+
+<span class="c1"># Step 1: Isolate specific runtime lines containing error events via grep</span>
+$<span class="w"> </span>grep<span class="w"> </span><span class="s1">&#39;\[ERROR\]&#39;</span><span class="w"> </span>server_metrics.log
+<span class="m">2026</span>-05-10<span class="w"> </span><span class="o">[</span>ERROR<span class="o">]</span><span class="w"> </span>Database<span class="w"> </span>timeout<span class="w"> </span>occurred<span class="w"> </span>on<span class="w"> </span>connection<span class="w"> </span>pool<span class="w"> </span>alpha
+<span class="m">2026</span>-05-10<span class="w"> </span><span class="o">[</span>ERROR<span class="o">]</span><span class="w"> </span>API<span class="w"> </span>endpoint<span class="w"> </span>timeout<span class="w"> </span>failure<span class="w"> </span>on<span class="w"> </span>resource<span class="w"> </span>fetch
+<span class="m">2026</span>-05-11<span class="w"> </span><span class="o">[</span>ERROR<span class="o">]</span><span class="w"> </span>Database<span class="w"> </span>timeout<span class="w"> </span>occurred<span class="w"> </span>on<span class="w"> </span>connection<span class="w"> </span>pool<span class="w"> </span>beta
+
+<span class="c1"># Step 2: Use sed to drop the absolute date strings to normalize formatting</span>
+$<span class="w"> </span>grep<span class="w"> </span><span class="s1">&#39;\[ERROR\]&#39;</span><span class="w"> </span>server_metrics.log<span class="w"> </span><span class="p">|</span><span class="w"> </span>sed<span class="w"> </span><span class="s1">&#39;s/2026-05-[0-9][0-9] //g&#39;</span>
+<span class="o">[</span>ERROR<span class="o">]</span><span class="w"> </span>Database<span class="w"> </span>timeout<span class="w"> </span>occurred<span class="w"> </span>on<span class="w"> </span>connection<span class="w"> </span>pool<span class="w"> </span>alpha
+<span class="o">[</span>ERROR<span class="o">]</span><span class="w"> </span>API<span class="w"> </span>endpoint<span class="w"> </span>timeout<span class="w"> </span>failure<span class="w"> </span>on<span class="w"> </span>resource<span class="w"> </span>fetch
+<span class="o">[</span>ERROR<span class="o">]</span><span class="w"> </span>Database<span class="w"> </span>timeout<span class="w"> </span>occurred<span class="w"> </span>on<span class="w"> </span>connection<span class="w"> </span>pool<span class="w"> </span>beta
+
+<span class="c1"># Step 3: Rearrange standard entries using sort to quickly group similar errors</span>
+$<span class="w"> </span>grep<span class="w"> </span><span class="s1">&#39;\[ERROR\]&#39;</span><span class="w"> </span>server_metrics.log<span class="w"> </span><span class="p">|</span><span class="w"> </span>sed<span class="w"> </span><span class="s1">&#39;s/2026-05-[0-9][0-9] //g&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>sort
+<span class="o">[</span>ERROR<span class="o">]</span><span class="w"> </span>API<span class="w"> </span>endpoint<span class="w"> </span>timeout<span class="w"> </span>failure<span class="w"> </span>on<span class="w"> </span>resource<span class="w"> </span>fetch
+<span class="o">[</span>ERROR<span class="o">]</span><span class="w"> </span>Database<span class="w"> </span>timeout<span class="w"> </span>occurred<span class="w"> </span>on<span class="w"> </span>connection<span class="w"> </span>pool<span class="w"> </span>alpha
+<span class="o">[</span>ERROR<span class="o">]</span><span class="w"> </span>Database<span class="w"> </span>timeout<span class="w"> </span>occurred<span class="w"> </span>on<span class="w"> </span>connection<span class="w"> </span>pool<span class="w"> </span>beta
+
+<span class="c1"># Step 4: Extract and isolate unique entries while tracking collision occurrences using uniq -c</span>
+$<span class="w"> </span>grep<span class="w"> </span><span class="s1">&#39;\[ERROR\]&#39;</span><span class="w"> </span>server_metrics.log<span class="w"> </span><span class="p">|</span><span class="w"> </span>sed<span class="w"> </span><span class="s1">&#39;s/connection pool .*/connection pool/g&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>sort<span class="w"> </span><span class="p">|</span><span class="w"> </span>uniq<span class="w"> </span>-c
+<span class="w">   </span><span class="m">2</span><span class="w"> </span><span class="m">2026</span>-05-10<span class="w"> </span><span class="o">[</span>ERROR<span class="o">]</span><span class="w"> </span>Database<span class="w"> </span>timeout<span class="w"> </span>occurred<span class="w"> </span>on<span class="w"> </span>connection<span class="w"> </span>pool
+<span class="w">   </span><span class="m">1</span><span class="w"> </span><span class="m">2026</span>-05-10<span class="w"> </span><span class="o">[</span>ERROR<span class="o">]</span><span class="w"> </span>API<span class="w"> </span>endpoint<span class="w"> </span>timeout<span class="w"> </span>failure<span class="w"> </span>on<span class="w"> </span>resource<span class="w"> </span>fetch
+</pre></div>
+</div>
+<p><strong>NOTE:</strong></p>
+<p>The <code class="docutils literal notranslate"><span class="pre">piping</span></code> used in linux is a fundamental feature.  It’s easy to overlook how important this is.  To linux “everything looks like a file”.  As you chain commands you’re virtually sending ‘files’ from one command to another.  This is fundamentally important because it makes chaining possible.  You can reorder commands, grep first then sort, or sort first then grep, for example.  Higher level operation like streaming from sockets (internet streaming) rely on the same principle.  And finally, it’s easy to add your own commands.  If you write a python script that takes input from <code class="docutils literal notranslate"><span class="pre">sys.stdin</span></code> and <code class="docutils literal notranslate"><span class="pre">sys.stdout</span></code> and make it executable, it easily becomes part of your toolkit at a command line pipe.</p>
+</section>
+</section>
+<hr class="docutils" />
+<section id="summary-command-reference-matrix">
+<h2>5. Summary Command Reference Matrix<a class="headerlink" href="#summary-command-reference-matrix" title="Permalink to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>Command</p></th>
+<th class="head text-left"><p>Long Equivalent Flag</p></th>
+<th class="head text-left"><p>Functional Application</p></th>
+<th class="head text-left"><p>Data Lifecycle Phase</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p><strong><code class="docutils literal notranslate"><span class="pre">pwd</span></code></strong></p></td>
+<td class="text-left"><p>None</p></td>
+<td class="text-left"><p>Prints the absolute folder path location you are active in.</p></td>
+<td class="text-left"><p>Context Auditing</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p><strong><code class="docutils literal notranslate"><span class="pre">ls</span> <span class="pre">-la</span></code></strong></p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">--all</span></code></p></td>
+<td class="text-left"><p>Comprehensive long-format listing exposing hidden configurations.</p></td>
+<td class="text-left"><p>Workspace Inspection</p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p><strong><code class="docutils literal notranslate"><span class="pre">cd</span> <span class="pre">~</span></code></strong></p></td>
+<td class="text-left"><p>None</p></td>
+<td class="text-left"><p>Instantly repositions user terminal context back to baseline home path.</p></td>
+<td class="text-left"><p>Active Navigation</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p><strong><code class="docutils literal notranslate"><span class="pre">mkdir</span> <span class="pre">-p</span></code></strong></p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">--parents</span></code></p></td>
+<td class="text-left"><p>Deploys nested folder layouts without halting if directories exist.</p></td>
+<td class="text-left"><p>Infrastructure Setup</p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p><strong><code class="docutils literal notranslate"><span class="pre">touch</span></code></strong></p></td>
+<td class="text-left"><p>None</p></td>
+<td class="text-left"><p>Instantly provisions an empty file footprint or alters file timestamps.</p></td>
+<td class="text-left"><p>Resource Mocking</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p><strong><code class="docutils literal notranslate"><span class="pre">cp</span> <span class="pre">-ri</span></code></strong></p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">--recursive</span> <span class="pre">--interactive</span></code></p></td>
+<td class="text-left"><p>Copies folder nodes with mandatory replacement confirmation checks.</p></td>
+<td class="text-left"><p>Data Backup / Staging</p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p><strong><code class="docutils literal notranslate"><span class="pre">mv</span> <span class="pre">-v</span></code></strong></p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">--verbose</span></code></p></td>
+<td class="text-left"><p>Displaces or renames files while reporting all systemic updates.</p></td>
+<td class="text-left"><p>Pipeline Pipeline Execution</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p><strong><code class="docutils literal notranslate"><span class="pre">rm</span> <span class="pre">-rf</span></code></strong></p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">--recursive</span> <span class="pre">--force</span></code></p></td>
+<td class="text-left"><p>Cleans paths recursively without alerting prompts.</p></td>
+<td class="text-left"><p>Cleanup Automation</p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p><strong><code class="docutils literal notranslate"><span class="pre">grep</span> <span class="pre">-e</span></code></strong></p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">--regexp</span></code></p></td>
+<td class="text-left"><p>Extracts targeted stream lines containing strict matching profiles.</p></td>
+<td class="text-left"><p>Extraction / Filtering</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p><strong><code class="docutils literal notranslate"><span class="pre">sort</span> <span class="pre">-u</span></code></strong></p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">--unique</span></code></p></td>
+<td class="text-left"><p>Organizes matching logs and drops consecutive duplicates.</p></td>
+<td class="text-left"><p>Data Transformation</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<hr class="docutils" />
+<section id="terminal-editing-via-nano">
+<h2>6. Terminal Editing via Nano<a class="headerlink" href="#terminal-editing-via-nano" title="Permalink to this heading">#</a></h2>
+<p>When configuring system environments, adjustments to files must often be completed without access to a graphical window server. <strong>Nano</strong> is a lightweight, modeless, display-oriented text editor tailored directly for basic command line file modifications.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Launching nano to adjust system settings</span>
+$<span class="w"> </span>nano<span class="w"> </span>playground/data/processed/pipeline_config.txt
+</pre></div>
+</div>
+<section id="core-structural-editing-rules">
+<h3>Core Structural Editing Rules<a class="headerlink" href="#core-structural-editing-rules" title="Permalink to this heading">#</a></h3>
+<ol class="arabic simple">
+<li><p><strong>Modeless Execution:</strong> Unlike modal text systems (such as Vim), Nano operates directly upon invocation. Typing immediately inputs characters onto the active text block layout.</p></li>
+<li><p><strong>On-Screen Navigation:</strong> The active editing cursor is navigated explicitly across text records utilizing standard keyboard arrow selections.</p></li>
+<li><p><strong>Control Shortcut Mappings:</strong> Commands listed along the bottom interface display rows utilize the caret symbol (<code class="docutils literal notranslate"><span class="pre">^</span></code>) to represent the <strong>Control key</strong>. For instance, saving changes is labeled as <code class="docutils literal notranslate"><span class="pre">^O</span></code> (WriteOut), requiring you to press <code class="docutils literal notranslate"><span class="pre">Ctrl</span> <span class="pre">+</span> <span class="pre">O</span></code> simultaneously.</p></li>
+</ol>
+</section>
+<section id="essential-key-bindings-for-file-management">
+<h3>Essential Key Bindings for File Management<a class="headerlink" href="#essential-key-bindings-for-file-management" title="Permalink to this heading">#</a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Ctrl</span> <span class="pre">+</span> <span class="pre">O</span></code>: Saves modifications (“Writes out” current buffer state to the storage disk).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Ctrl</span> <span class="pre">+</span> <span class="pre">R</span></code>: Appends the absolute contents of an external file layout directly into your current editing cursor position.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Ctrl</span> <span class="pre">+</span> <span class="pre">W</span></code>: Initiates a global terminal string find execution (“Where Is”) to trace specific tokens.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Ctrl</span> <span class="pre">+</span> <span class="pre">K</span></code>: Cuts an entire line of text, storing it in a temporary local buffer layer.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Ctrl</span> <span class="pre">+</span> <span class="pre">U</span></code>: Pastes (“Uncuts”) the line currently held in the cut buffer onto the active cursor plane.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Ctrl</span> <span class="pre">+</span> <span class="pre">X</span></code>: Exits Nano. If unsaved edits exist, Nano will prompt you (<code class="docutils literal notranslate"><span class="pre">y/n</span></code>) to write out configurations first.</p></li>
+</ul>
+</section>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="index.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Software and Automation for Data Science</p>
+      </div>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-shell-environment-core-interpretation">1. The Shell Environment: Core Interpretation</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#verifying-program-paths-and-interpretation">Verifying Program Paths and Interpretation</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#filesystem-layout-and-navigation">2. Filesystem Layout and Navigation</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-core-directory-landscape">The Core Directory Landscape</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#navigating-the-maze-via-pwd-and-cd">Navigating the Maze via <code class="docutils literal notranslate"><span class="pre">pwd</span></code> and <code class="docutils literal notranslate"><span class="pre">cd</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#path-definitions-absolute-vs-relative">Path Definitions: Absolute vs. Relative</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#managing-files-and-directories">3. Managing Files and Directories</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#file-creation-duplication-and-erasure">File Creation, Duplication, and Erasure</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#option-modifiers-short-vs-long-configurations">Option Modifiers: Short vs. Long Configurations</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#stream-inspection-and-command-chaining">4. Stream Inspection and Command Chaining</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#interrogating-streams-cat-less-grep-sed-sort">Interrogating Streams: <code class="docutils literal notranslate"><span class="pre">cat</span></code>, <code class="docutils literal notranslate"><span class="pre">less</span></code>, <code class="docutils literal notranslate"><span class="pre">grep</span></code>, <code class="docutils literal notranslate"><span class="pre">sed</span></code>, <code class="docutils literal notranslate"><span class="pre">sort</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-pipe-operator">The Pipe Operator (<code class="docutils literal notranslate"><span class="pre">|</span></code>)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#step-by-step-stream-processing-and-data-transformation-examples">Step-by-Step Stream Processing and Data Transformation Examples</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#summary-command-reference-matrix">5. Summary Command Reference Matrix</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#terminal-editing-via-nano">6. Terminal Editing via Nano</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#core-structural-editing-rules">Core Structural Editing Rules</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#essential-key-bindings-for-file-management">Essential Key Bindings for File Management</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By UVA Data Science
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2022.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
