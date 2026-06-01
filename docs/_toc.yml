@@ -1,4 +1,5 @@
 format: jb-book
 root: index
 chapters:
-  - file: module_1
+  - file: week1_linux.md
+  - file: week3_testing_addon_3.md
