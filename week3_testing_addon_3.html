@@ -1,0 +1,720 @@
+
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>Practical Test Configuration Guide: Built-in Markers and Stream Mocking &#8212; DS5111: Software and Automation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" href="_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/clipboard.min.js"></script>
+    <script src="_static/copybutton.js"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="_static/design-tabs.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="_static/sphinx-thebe.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'week3_testing_addon_3';</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="The Linux Environment, Filesystem Navigation, and Text Manipulation" href="week1_linux.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">DS5111: Software and Automation</p>
+  
+</a></div>
+        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="index.html">
+                    Software and Automation for Data Science
+                </a>
+            </li>
+        </ul>
+        <ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="week1_linux.html">The Linux Environment, Filesystem Navigation, and Text Manipulation</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Practical Test Configuration Guide: Built-in Markers and Stream Mocking</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/week3_testing_addon_3.md" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.md</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Practical Test Configuration Guide: Built-in Markers and Stream Mocking</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#core-testing-layouts-given-when-then">1. Core Testing Layouts: Given-When-Then</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-interleaved-anti-pattern">The Interleaved Anti-Pattern</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dynamic-execution-management-bypassing-and-failing-tests">2. Dynamic Execution Management: Bypassing and Failing Tests</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#a-unconditional-skipping-pytest-mark-skip">A. Unconditional Skipping (<code class="docutils literal notranslate"><span class="pre">@pytest.mark.skip</span></code>)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#b-conditional-skipping-pytest-mark-skipif">B. Conditional Skipping (<code class="docutils literal notranslate"><span class="pre">@pytest.mark.skipif</span></code>)</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#platform-and-python-version-control-examples">Platform and Python Version Control Examples</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c-expected-failures-pytest-mark-xfail">C. Expected Failures (<code class="docutils literal notranslate"><span class="pre">@pytest.mark.xfail</span></code>)</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#advanced-xfail-parameters-and-strict-configuration">Advanced <code class="docutils literal notranslate"><span class="pre">xfail</span></code> Parameters and Strict Configuration</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data-driven-testing-parameterization-matrix">3. Data-Driven Testing: Parameterization Matrix</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#simulating-console-interactions-monkeypatch-stdin-and-stdout">4. Simulating Console Interactions: Monkeypatch, Stdin, and Stdout</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#summary-reference-matrix">5. Summary Reference Matrix</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="practical-test-configuration-guide-built-in-markers-and-stream-mocking">
+<h1>Practical Test Configuration Guide: Built-in Markers and Stream Mocking<a class="headerlink" href="#practical-test-configuration-guide-built-in-markers-and-stream-mocking" title="Permalink to this heading">#</a></h1>
+<p>When engineering a robust test suite, a frequent problem is that executing every single validation test over minor changes introduces massive developmental latency. Advanced software testing requires a framework capable of selecting, modifying, and conditionalizing individual tests.</p>
+<p>This reference manual covers <strong>Pytest Markers</strong>, a fundamental metadata tagging system that lets you label, filter, skip, and customize test executions. Additionally, this guide details how to leverage advanced pytest utilities like <code class="docutils literal notranslate"><span class="pre">monkeypatch</span></code> to simulate standard stream inputs and execute parametrized configurations across variable inputs.</p>
+<hr class="docutils" />
+<section id="core-testing-layouts-given-when-then">
+<h2>1. Core Testing Layouts: Given-When-Then<a class="headerlink" href="#core-testing-layouts-given-when-then" title="Permalink to this heading">#</a></h2>
+<p>To keep tests readable and clean, individual test functions should segment their execution blocks using a structured design pattern known as <strong>Arrange-Act-Assert</strong> or <strong>Given-When-Then</strong>.</p>
+<ul class="simple">
+<li><p><strong>Given (Arrange):</strong> Setting up the entry preconditions. This phase prepares data structures, initializes objects, configuration maps, or mock assets before running test processes.</p></li>
+<li><p><strong>When (Act):</strong> Executing the targeted software unit or component behavior under validation.</p></li>
+<li><p><strong>Then (Assert):</strong> Validating that the actual output matches expected results.</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># test_base.py</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">test_string_title_normalization</span><span class="p">():</span>
+    <span class="c1"># GIVEN a raw unformatted alphanumeric title sequence</span>
+    <span class="n">raw_title</span> <span class="o">=</span> <span class="s2">&quot;production_microservice_node&quot;</span>
+    
+    <span class="c1"># WHEN we process the string behavior</span>
+    <span class="n">normalized_title</span> <span class="o">=</span> <span class="n">raw_title</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="p">)</span><span class="o">.</span><span class="n">title</span><span class="p">()</span>
+    
+    <span class="c1"># THEN the text fields are modified as expected</span>
+    <span class="k">assert</span> <span class="n">normalized_title</span> <span class="o">==</span> <span class="s2">&quot;Production Microservice Node&quot;</span>
+</pre></div>
+</div>
+<section id="the-interleaved-anti-pattern">
+<h3>The Interleaved Anti-Pattern<a class="headerlink" href="#the-interleaved-anti-pattern" title="Permalink to this heading">#</a></h3>
+<p>A critical testing flaw is the <code class="docutils literal notranslate"><span class="pre">Arrange-Assert-Act-Assert-Act-Assert...</span></code> pattern, where multiple operations and assertions are combined into one test. When a test configured this way fails, it is difficult to isolate which exact operation or pre-condition caused the crash, which slows down debugging. Sticking strictly to a single Given-When-Then flow isolates test failures to a single explicit behavior.</p>
+</section>
+</section>
+<hr class="docutils" />
+<section id="dynamic-execution-management-bypassing-and-failing-tests">
+<h2>2. Dynamic Execution Management: Bypassing and Failing Tests<a class="headerlink" href="#dynamic-execution-management-bypassing-and-failing-tests" title="Permalink to this heading">#</a></h2>
+<p>Pytest includes built-in metadata markers that alter test runner behavior based on feature readiness or structural platform requirements.</p>
+<section id="a-unconditional-skipping-pytest-mark-skip">
+<h3>A. Unconditional Skipping (<code class="docutils literal notranslate"><span class="pre">&#64;pytest.mark.skip</span></code>)<a class="headerlink" href="#a-unconditional-skipping-pytest-mark-skip" title="Permalink to this heading">#</a></h3>
+<p>The unconditional <code class="docutils literal notranslate"><span class="pre">skip</span></code> marker tells the test runner to completely bypass an existing test method. This pattern is highly useful when a component undergoes an active structural overhaul and is expected to fail. Always provide a <code class="docutils literal notranslate"><span class="pre">reason</span></code> argument to maintain test suite documentation.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pytest</span>
+
+<span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">skip</span><span class="p">(</span><span class="n">reason</span><span class="o">=</span><span class="s2">&quot;Upstream authorization scheme changed; skipping until token patch settles.&quot;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">test_legacy_api_handshake</span><span class="p">():</span>
+    <span class="k">pass</span>
+</pre></div>
+</div>
+</section>
+<section id="b-conditional-skipping-pytest-mark-skipif">
+<h3>B. Conditional Skipping (<code class="docutils literal notranslate"><span class="pre">&#64;pytest.mark.skipif</span></code>)<a class="headerlink" href="#b-conditional-skipping-pytest-mark-skipif" title="Permalink to this heading">#</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">skipif</span></code> marker evaluates logical statements at collection time. If any provided expression evaluates to <code class="docutils literal notranslate"><span class="pre">True</span></code>, the execution block is skipped. This is standard practice when testing platform-dependent resources, specific python versions, or external libraries.</p>
+<section id="platform-and-python-version-control-examples">
+<h4>Platform and Python Version Control Examples<a class="headerlink" href="#platform-and-python-version-control-examples" title="Permalink to this heading">#</a></h4>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pytest</span>
+
+<span class="c1"># Example 1: Bypassing execution on non-Linux architectures</span>
+<span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">skipif</span><span class="p">(</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">!=</span> <span class="s2">&quot;linux&quot;</span><span class="p">,</span>
+    <span class="n">reason</span><span class="o">=</span><span class="s2">&quot;Native environment optimized for POSIX Linux shells.&quot;</span>
+<span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">test_linux_subsystem_calls</span><span class="p">():</span>
+    <span class="k">pass</span>
+
+<span class="c1"># Example 2: Verifying a strict Python runtime dependency</span>
+<span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">skipif</span><span class="p">(</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span> <span class="o">&lt;</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">11</span><span class="p">),</span>
+    <span class="n">reason</span><span class="o">=</span><span class="s2">&quot;Requires Python 3.11 features or higher for pipeline execution.&quot;</span>
+<span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">test_modern_interpreter_features</span><span class="p">():</span>
+    <span class="k">pass</span>
+</pre></div>
+</div>
+<p>{note}
+<strong>Issuing Warnings for Platform Variances:</strong> If your objective is to dynamically inspect environment settings without completely skipping execution, you can log custom validation warnings using Python’s native <code class="docutils literal notranslate"><span class="pre">warnings</span></code> module.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">test_host_os_runtime_audit</span><span class="p">():</span>
+    <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">!=</span> <span class="s2">&quot;linux&quot;</span><span class="p">:</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="ne">UserWarning</span><span class="p">(</span><span class="s2">&quot;Host platform is not Linux; proceeding under emulation mode.&quot;</span><span class="p">))</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="c-expected-failures-pytest-mark-xfail">
+<h3>C. Expected Failures (<code class="docutils literal notranslate"><span class="pre">&#64;pytest.mark.xfail</span></code>)<a class="headerlink" href="#c-expected-failures-pytest-mark-xfail" title="Permalink to this heading">#</a></h3>
+<p>If you want to run your full test suite but anticipate that a specific validation path will crash due to an incomplete feature implementation, use the <code class="docutils literal notranslate"><span class="pre">xfail</span></code> marker. Rather than failing the build, pytest reports this result cleanly as an expected failure (<code class="docutils literal notranslate"><span class="pre">XFAIL</span></code>).</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pytest</span>
+
+<span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">xfail</span><span class="p">(</span><span class="n">reason</span><span class="o">=</span><span class="s2">&quot;Negative offset index boundaries not yet engineered.&quot;</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">test_negative_index_bounds</span><span class="p">():</span>
+    <span class="n">array</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+    <span class="k">assert</span> <span class="n">array</span><span class="p">[</span><span class="o">-</span><span class="mi">5</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span>  <span class="c1"># Raises an IndexError, marked as XFAIL</span>
+</pre></div>
+</div>
+<section id="advanced-xfail-parameters-and-strict-configuration">
+<h4>Advanced <code class="docutils literal notranslate"><span class="pre">xfail</span></code> Parameters and Strict Configuration<a class="headerlink" href="#advanced-xfail-parameters-and-strict-configuration" title="Permalink to this heading">#</a></h4>
+<ul class="simple">
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">condition</span></code></strong>: An optional boolean parameter. If provided, the test behaves as <code class="docutils literal notranslate"><span class="pre">xfail</span></code> only if the statement evaluates to <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">run</span></code></strong>: Defaults to <code class="docutils literal notranslate"><span class="pre">True</span></code>. If set to <code class="docutils literal notranslate"><span class="pre">False</span></code>, the test engine logs the test as an expected failure immediately without running the underlying code.</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">raises</span></code></strong>: Explicit exception types (e.g., <code class="docutils literal notranslate"><span class="pre">ValueError</span></code>). If the test raises an error outside this set, it triggers a hard test suite failure (<code class="docutils literal notranslate"><span class="pre">FAILED</span></code>).</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">strict</span></code></strong>: When set to <code class="docutils literal notranslate"><span class="pre">True</span></code>, an unexpected test pass triggers an immediate suite failure (<code class="docutils literal notranslate"><span class="pre">FAILED</span></code>) rather than passing as an anomaly (<code class="docutils literal notranslate"><span class="pre">XPASS</span></code>).</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pytest</span>
+
+<span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">xfail</span><span class="p">(</span><span class="n">reason</span><span class="o">=</span><span class="s2">&quot;Enforcing failure behavior on an active bug fix&quot;</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">test_strict_bug_tracking</span><span class="p">():</span>
+    <span class="c1"># If a bug unexpectedly resolves and this test passes, strict=True forces a hard FAILED state</span>
+    <span class="k">assert</span> <span class="mi">1</span> <span class="o">==</span> <span class="mi">1</span>
+</pre></div>
+</div>
+<p>{warning}
+<strong>Avoid Stale Tests:</strong> Do not use <code class="docutils literal notranslate"><span class="pre">skip</span></code> or <code class="docutils literal notranslate"><span class="pre">xfail</span></code> to store speculative test ideas for features you may or may not implement far in the future. This creates technical debt and clutters test logs. Apply the YAGNI (“You Aren’t Gonna Need It”) principle: implement code and tests when they are needed, never just because you foresee needing them later.</p>
+</section>
+</section>
+</section>
+<hr class="docutils" />
+<section id="data-driven-testing-parameterization-matrix">
+<h2>3. Data-Driven Testing: Parameterization Matrix<a class="headerlink" href="#data-driven-testing-parameterization-matrix" title="Permalink to this heading">#</a></h2>
+<p>Writing separate test functions for different input data choices causes code duplication and complicates maintenance. Pytest provides the <code class="docutils literal notranslate"><span class="pre">&#64;pytest.mark.parametrize</span></code> decorator to run a single test function multiple times across an array of inputs and expected outcomes.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pytest</span>
+
+<span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">parametrize</span><span class="p">(</span>
+    <span class="s2">&quot;input_string, expected_count&quot;</span><span class="p">,</span>
+    <span class="p">[</span>
+        <span class="p">(</span><span class="s2">&quot;production_node_1&quot;</span><span class="p">,</span> <span class="mi">17</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">&quot;alpha&quot;</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">&quot;data payload matrix&quot;</span><span class="p">,</span> <span class="mi">19</span><span class="p">)</span>
+    <span class="p">]</span>
+<span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">test_string_length_evaluation</span><span class="p">(</span><span class="n">input_string</span><span class="p">,</span> <span class="n">expected_count</span><span class="p">):</span>
+    <span class="c1"># GIVEN an input string payload matrix</span>
+    <span class="c1"># WHEN calculating the character count</span>
+    <span class="n">actual_count</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">input_string</span><span class="p">)</span>
+    
+    <span class="c1"># THEN the result must match our expected count bounds</span>
+    <span class="k">assert</span> <span class="n">actual_count</span> <span class="o">==</span> <span class="n">expected_count</span>
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="simulating-console-interactions-monkeypatch-stdin-and-stdout">
+<h2>4. Simulating Console Interactions: Monkeypatch, Stdin, and Stdout<a class="headerlink" href="#simulating-console-interactions-monkeypatch-stdin-and-stdout" title="Permalink to this heading">#</a></h2>
+<p>Data pipelines frequently read text blocks from standard input streams (<code class="docutils literal notranslate"><span class="pre">sys.stdin</span></code>) or output tracking analytics directly to standard output (<code class="docutils literal notranslate"><span class="pre">sys.stdout</span></code>). To test these applications cleanly without manually writing flat text files to disk, you can combine <code class="docutils literal notranslate"><span class="pre">&#64;pytest.mark.parametrize</span></code> with pytest’s built-in <code class="docutils literal notranslate"><span class="pre">monkeypatch</span></code> fixture and <code class="docutils literal notranslate"><span class="pre">capsys</span></code> tracker.</p>
+<p>This architecture lets you simulate pipes like <code class="docutils literal notranslate"><span class="pre">cat</span> <span class="pre">input_ids.txt</span> <span class="pre">|</span> <span class="pre">python</span> <span class="pre">script.py</span></code> completely inside memory allocations.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># process_stream.py</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">parse_incoming_stream</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Reads lines from stdin, strips whitespaces, and prints uppercase outcomes.&quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdin</span><span class="p">:</span>
+        <span class="n">clean_line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">clean_line</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;PROCESSED:</span><span class="si">{</span><span class="n">clean_line</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># ==================== TEST SUITE IMPLEMENTATION ====================</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">io</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pytest</span>
+
+<span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">parametrize</span><span class="p">(</span>
+    <span class="s2">&quot;simulated_stdin, expected_stdout&quot;</span><span class="p">,</span>
+    <span class="p">[</span>
+        <span class="p">(</span>
+            <span class="s2">&quot;id_001</span><span class="se">\n</span><span class="s2">id_002</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> 
+            <span class="s2">&quot;PROCESSED:ID_001</span><span class="se">\n</span><span class="s2">PROCESSED:ID_002</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="p">),</span>
+        <span class="p">(</span>
+            <span class="s2">&quot;  space_node  </span><span class="se">\n\n</span><span class="s2">  alpha_beta  </span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> 
+            <span class="s2">&quot;PROCESSED:SPACE_NODE</span><span class="se">\n</span><span class="s2">PROCESSED:ALPHA_BETA</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="p">),</span>
+        <span class="p">(</span>
+            <span class="s2">&quot;&quot;</span><span class="p">,</span> 
+            <span class="s2">&quot;&quot;</span>
+        <span class="p">)</span>
+    <span class="p">]</span>
+<span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">test_stream_pipeline_execution</span><span class="p">(</span><span class="n">monkeypatch</span><span class="p">,</span> <span class="n">capsys</span><span class="p">,</span> <span class="n">simulated_stdin</span><span class="p">,</span> <span class="n">expected_stdout</span><span class="p">):</span>
+    <span class="c1"># GIVEN a simulated multiline console standard input stream block</span>
+    <span class="n">mock_input_stream</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">StringIO</span><span class="p">(</span><span class="n">simulated_stdin</span><span class="p">)</span>
+    
+    <span class="c1"># WHEN we monkeypatch sys.stdin to intercept the execution loop</span>
+    <span class="n">monkeypatch</span><span class="o">.</span><span class="n">setattr</span><span class="p">(</span><span class="n">sys</span><span class="p">,</span> <span class="s2">&quot;stdin&quot;</span><span class="p">,</span> <span class="n">mock_input_stream</span><span class="p">)</span>
+    
+    <span class="c1"># AND execute our command-line processing engine</span>
+    <span class="n">parse_incoming_stream</span><span class="p">()</span>
+    
+    <span class="c1"># THEN capture the console outputs directed to standard output</span>
+    <span class="n">captured</span> <span class="o">=</span> <span class="n">capsys</span><span class="o">.</span><span class="n">readouterr</span><span class="p">()</span>
+    
+    <span class="c1"># AND verify the formatted stream values match expectations</span>
+    <span class="k">assert</span> <span class="n">captured</span><span class="o">.</span><span class="n">out</span> <span class="o">==</span> <span class="n">expected_stdout</span>
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="summary-reference-matrix">
+<h2>5. Summary Reference Matrix<a class="headerlink" href="#summary-reference-matrix" title="Permalink to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>Feature</p></th>
+<th class="head text-left"><p>Code Syntax Pattern</p></th>
+<th class="head text-left"><p>Targeted Operational Purpose</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p><strong>Path Selector</strong></p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">pytest</span> <span class="pre">path/test_mod.py::TestClass::test_method</span></code></p></td>
+<td class="text-left"><p>Targets an isolated testing coordinate precisely in your execution path.</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p><strong>Substring Selection</strong></p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">pytest</span> <span class="pre">-k</span> <span class="pre">&quot;parse</span> <span class="pre">and</span> <span class="pre">not</span> <span class="pre">json&quot;</span></code></p></td>
+<td class="text-left"><p>Filters runs dynamically using string match logic across method names.</p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p><strong>Unconditional Skip</strong></p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">&#64;pytest.mark.skip(reason=&quot;...&quot;)</span></code></p></td>
+<td class="text-left"><p>Bypasses test runs entirely while archiving development notes.</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p><strong>Conditional Skip</strong></p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">&#64;pytest.mark.skipif(condition,</span> <span class="pre">reason=&quot;...&quot;)</span></code></p></td>
+<td class="text-left"><p>Evaluates environment dependencies dynamically before enabling tests.</p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p><strong>Strict Expected Failure</strong></p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">&#64;pytest.mark.xfail(strict=True)</span></code></p></td>
+<td class="text-left"><p>Promotes unexpected test passes into hard suite failures to catch stale issues.</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p><strong>Test Parameterization</strong></p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">&#64;pytest.mark.parametrize(&quot;arg&quot;,</span> <span class="pre">[val1,</span> <span class="pre">val2])</span></code></p></td>
+<td class="text-left"><p>Executes a single test method multiple times across an input matrix.</p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p><strong>Stream Interception</strong></p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">monkeypatch.setattr(sys,</span> <span class="pre">&quot;stdin&quot;,</span> <span class="pre">StringIO())</span></code></p></td>
+<td class="text-left"><p>Simulates command line console entries within system operations.</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p><strong>Console Capture</strong></p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">captured</span> <span class="pre">=</span> <span class="pre">capsys.readouterr()</span></code></p></td>
+<td class="text-left"><p>Audits text records pushed out to <code class="docutils literal notranslate"><span class="pre">stdout</span></code> and <code class="docutils literal notranslate"><span class="pre">stderr</span></code> streams.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="week1_linux.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">The Linux Environment, Filesystem Navigation, and Text Manipulation</p>
+      </div>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#core-testing-layouts-given-when-then">1. Core Testing Layouts: Given-When-Then</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-interleaved-anti-pattern">The Interleaved Anti-Pattern</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dynamic-execution-management-bypassing-and-failing-tests">2. Dynamic Execution Management: Bypassing and Failing Tests</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#a-unconditional-skipping-pytest-mark-skip">A. Unconditional Skipping (<code class="docutils literal notranslate"><span class="pre">@pytest.mark.skip</span></code>)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#b-conditional-skipping-pytest-mark-skipif">B. Conditional Skipping (<code class="docutils literal notranslate"><span class="pre">@pytest.mark.skipif</span></code>)</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#platform-and-python-version-control-examples">Platform and Python Version Control Examples</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c-expected-failures-pytest-mark-xfail">C. Expected Failures (<code class="docutils literal notranslate"><span class="pre">@pytest.mark.xfail</span></code>)</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#advanced-xfail-parameters-and-strict-configuration">Advanced <code class="docutils literal notranslate"><span class="pre">xfail</span></code> Parameters and Strict Configuration</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data-driven-testing-parameterization-matrix">3. Data-Driven Testing: Parameterization Matrix</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#simulating-console-interactions-monkeypatch-stdin-and-stdout">4. Simulating Console Interactions: Monkeypatch, Stdin, and Stdout</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#summary-reference-matrix">5. Summary Reference Matrix</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By UVA Data Science
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2022.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
