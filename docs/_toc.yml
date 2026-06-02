@@ -3,3 +3,4 @@ root: index
 chapters:
   - file: week1_linux.md
   - file: week3_testing_addon_3.md
+  - file: week3_github_actions.md
