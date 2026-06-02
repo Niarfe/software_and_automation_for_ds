@@ -1,0 +1,670 @@
+
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>Continuous Integration Foundations: Automating Test Suites with GitHub Actions &#8212; DS5111: Software and Automation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" href="_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/clipboard.min.js"></script>
+    <script src="_static/copybutton.js"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="_static/design-tabs.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="_static/sphinx-thebe.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'week3_github_actions';</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Practical Test Configuration Guide: Built-in Markers and Stream Mocking" href="week3_testing_addon_3.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">DS5111: Software and Automation</p>
+  
+</a></div>
+        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="index.html">
+                    Software and Automation for Data Science
+                </a>
+            </li>
+        </ul>
+        <ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="week1_linux.html">The Linux Environment, Filesystem Navigation, and Text Manipulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="week3_testing_addon_3.html">Practical Test Configuration Guide: Built-in Markers and Stream Mocking</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Continuous Integration Foundations: Automating Test Suites with GitHub Actions</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/week3_github_actions.md" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.md</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Continuous Integration Foundations: Automating Test Suites with GitHub Actions</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-github-actions-architectural-model">1. The GitHub Actions Architectural Model</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#comprehensive-blueprint-constructing-the-test-pipeline">2. Comprehensive Blueprint: Constructing the Test Pipeline</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#core-prerequisites-managing-the-remote-environment">Core Prerequisites: Managing the Remote Environment</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-by-step-code-walkthrough">3. Step-by-Step Code Walkthrough</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-orchestration-triggers-on">The Orchestration Triggers (<code class="docutils literal notranslate"><span class="pre">on:</span></code>)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#environmental-matrix-scaling-strategy-matrix">Environmental Matrix Scaling (<code class="docutils literal notranslate"><span class="pre">strategy.matrix</span></code>)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#reusable-action-components-uses">Reusable Action Components (<code class="docutils literal notranslate"><span class="pre">uses:</span></code>)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#native-makefile-execution-run">Native Makefile Execution (<code class="docutils literal notranslate"><span class="pre">run:</span></code>)</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#operational-troubleshooting-matrix">4. Operational Troubleshooting Matrix</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#branch-strategy-workaround-testing-before-merging">5. Branch Strategy Workaround: Testing Before Merging</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-workaround-framework">The Workaround Framework</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dashboard-interface-navigation-and-manual-execution">6. Dashboard Interface Navigation and Manual Execution</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#running-workflows-manually">Running Workflows Manually</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#auditing-output-logs-and-status-results">Auditing Output Logs and Status Results</a></li>
+</ul>
+</li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="continuous-integration-foundations-automating-test-suites-with-github-actions">
+<h1>Continuous Integration Foundations: Automating Test Suites with GitHub Actions<a class="headerlink" href="#continuous-integration-foundations-automating-test-suites-with-github-actions" title="Permalink to this heading">#</a></h1>
+<p>Local automation frameworks, such as a localized <code class="docutils literal notranslate"><span class="pre">Makefile</span></code>, streamline development operations by standardizing compilation, syntax linting, and verification routines into predictable, single-word execution tasks. However, relying solely on local validation introduces a systemic vulnerability: the “it works on my machine” anti-pattern. Variations in host operating system configurations, underlying dependency architectures, and uncommitted local assets can obscure hidden bugs, allowing defective code to bypass early detection.</p>
+<p>To achieve production-grade quality control, teams must migrate validation checks off individual local hardware setups and relocate them into a centralized, remote environment using <strong>Continuous Integration (CI)</strong>. This reference guide demonstrates how to leverage <strong>GitHub Actions</strong> to automatically orchestrate your local <code class="docutils literal notranslate"><span class="pre">Makefile</span></code> commands inside remote virtual environments whenever updates are pushed to a code repository.</p>
+<hr class="docutils" />
+<section id="the-github-actions-architectural-model">
+<h2>1. The GitHub Actions Architectural Model<a class="headerlink" href="#the-github-actions-architectural-model" title="Permalink to this heading">#</a></h2>
+<p>To orchestrate automated pipelines within a Git host platform, you must first understand the structural hierarchy and operational execution model of the underlying continuous integration engine. The GitHub Actions runtime environment is divided into four distinct components that cascade sequentially:</p>
+<ul class="simple">
+<li><p><strong>Workflows:</strong> High-level automated pipelines defined inside your repository. A workflow specifies a sequence of activities that execute automatically when specific operational triggers occur. Workflows are declared using YAML format and must reside inside a dedicated, hidden directory structure: <code class="docutils literal notranslate"><span class="pre">.github/workflows/</span></code>.</p></li>
+<li><p><strong>Jobs:</strong> Isolated sub-execution blocks bundled within a workflow. An individual job targets a specific functional goal of the pipeline (e.g., code quality auditing vs. comprehensive test suite execution). Crucially, while the steps within a single job run sequentially, <strong>separate jobs within a workflow execute in parallel by default</strong>, utilizing completely distinct environment allocations.</p></li>
+<li><p><strong>Steps:</strong> The smallest units of execution within a job. Steps execute sequentially on the same machine allocation, meaning environmental modifications made in step one carry directly into step two. A step can either trigger a standalone shell script command or invoke a modular, reusable code package called an <strong>action</strong>.</p></li>
+<li><p><strong>Runners:</strong> The physical or virtualized computer containers where jobs are executed. These systems run specialized listener daemons that pull your repository code, execute the defined steps, and stream live terminal output back to your web configuration interface.</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="comprehensive-blueprint-constructing-the-test-pipeline">
+<h2>2. Comprehensive Blueprint: Constructing the Test Pipeline<a class="headerlink" href="#comprehensive-blueprint-constructing-the-test-pipeline" title="Permalink to this heading">#</a></h2>
+<p>To bridge your local testing patterns with a remote CI environment without reinventing the wheel, your workflow should directly leverage your pre-configured local <code class="docutils literal notranslate"><span class="pre">Makefile</span></code> targets. This configuration reuses your existing automation recipes, ensuring consistency between your local machine environment and the remote testing environment.</p>
+<section id="core-prerequisites-managing-the-remote-environment">
+<h3>Core Prerequisites: Managing the Remote Environment<a class="headerlink" href="#core-prerequisites-managing-the-remote-environment" title="Permalink to this heading">#</a></h3>
+<p>When a virtual runner initializes (e.g., a hosted <code class="docutils literal notranslate"><span class="pre">ubuntu-latest</span></code> instance), it is a completely <strong>blank slate</strong>. It lacks your code assets, your custom virtual environment directory, and your third-party Python module dependencies. Consequently, the workflow must explicitly recreate those configurations step-by-step before it can execute your test suite.</p>
+<p>Create a new file inside your repository named <code class="docutils literal notranslate"><span class="pre">.github/workflows/verify-pipeline.yml</span></code>. Populate the file with the following complete production-grade configuration:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Test Suite Automation</span>
+
+<span class="c1"># Controls when the continuous integration pipeline executes</span>
+<span class="nt">on</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">push</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">branches</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="w"> </span><span class="nv">main</span><span class="w"> </span><span class="p p-Indicator">]</span>
+<span class="w">  </span><span class="nt">pull_request</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">branches</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="w"> </span><span class="nv">main</span><span class="w"> </span><span class="p p-Indicator">]</span>
+<span class="w">  </span><span class="c1"># Enables manual pipeline triggers directly from the GitHub web user interface</span>
+<span class="w">  </span><span class="nt">workflow_dispatch</span><span class="p">:</span>
+
+<span class="nt">jobs</span><span class="p">:</span>
+<span class="w">  </span><span class="c1"># Job 1: Comprehensive Multi-Environment Quality Audit and Validation Sweep</span>
+<span class="w">  </span><span class="nt">matrix-testing</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Core Test Runner (Python ${{ matrix.python-version }})</span>
+<span class="w">    </span><span class="nt">runs-on</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ubuntu-latest</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="c1"># Configure an execution matrix to run tests across multiple Python runtimes simultaneously</span>
+<span class="w">    </span><span class="nt">strategy</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">matrix</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">python-version</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&quot;3.13&quot;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&quot;3.14&quot;</span><span class="p p-Indicator">]</span>
+
+<span class="w">    </span><span class="nt">steps</span><span class="p">:</span>
+<span class="w">      </span><span class="c1"># Step 1: Clone the repository files onto the blank virtual runner filesystem</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Checkout Code Repository</span>
+<span class="w">        </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/checkout@v3</span>
+
+<span class="w">      </span><span class="c1"># Step 2: Provision the target Python interpreter version inside the container</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Initialize Python ${{ matrix.python-version }}</span>
+<span class="w">        </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/setup-python@v4</span>
+<span class="w">        </span><span class="nt">with</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">python-version</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ matrix.python-version }}</span>
+
+<span class="w">      </span><span class="c1"># Step 3: Run the local Makefile recipe to construct the isolated virtual environment</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Provision Virtual Environment</span>
+<span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">make env</span>
+
+<span class="w">      </span><span class="c1"># Step 4: Run the local Makefile recipe to update and install required dependencies</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Synchronize Package Dependencies</span>
+<span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">make update</span>
+
+<span class="w">      </span><span class="c1"># Step 5: Execute the syntax linter using your local automation layer</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Execute Code Quality Linting</span>
+<span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">make lint</span>
+
+<span class="w">      </span><span class="c1"># Step 6: Run the full test suite via your standardized local recipe</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Execute Test Suite</span>
+<span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">make tests</span>
+</pre></div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="step-by-step-code-walkthrough">
+<h2>3. Step-by-Step Code Walkthrough<a class="headerlink" href="#step-by-step-code-walkthrough" title="Permalink to this heading">#</a></h2>
+<p>Let’s break down the mechanics of the workflow configuration line-by-line to understand how GitHub Actions interprets the syntax:</p>
+<section id="the-orchestration-triggers-on">
+<h3>The Orchestration Triggers (<code class="docutils literal notranslate"><span class="pre">on:</span></code>)<a class="headerlink" href="#the-orchestration-triggers-on" title="Permalink to this heading">#</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">on:</span></code> directive acts as the event gateway for the pipeline. In this layout, the workflow actively listens for code additions via <code class="docutils literal notranslate"><span class="pre">push</span></code> events or proposed code modifications via <code class="docutils literal notranslate"><span class="pre">pull_request</span></code> integrations—but restricts execution exclusively to events targeting the <code class="docutils literal notranslate"><span class="pre">main</span></code> branch.</p>
+<p>Additionally, appending the <code class="docutils literal notranslate"><span class="pre">workflow_dispatch:</span></code> key adds a manual trigger option to your project dashboard, allowing you to run the suite on-demand without pushing empty commits.</p>
+</section>
+<section id="environmental-matrix-scaling-strategy-matrix">
+<h3>Environmental Matrix Scaling (<code class="docutils literal notranslate"><span class="pre">strategy.matrix</span></code>)<a class="headerlink" href="#environmental-matrix-scaling-strategy-matrix" title="Permalink to this heading">#</a></h3>
+<p>Rather than verifying code against a singular runtime configuration, high-reliability engineering mandates testing software stability across upcoming and current dependency layers. The <code class="docutils literal notranslate"><span class="pre">matrix</span></code> block instructs GitHub Actions to generate <strong>two distinct, parallel jobs</strong> from this single blueprint configuration block:</p>
+<ul class="simple">
+<li><p>Job A spins up an <code class="docutils literal notranslate"><span class="pre">ubuntu-latest</span></code> runner and injects Python version <code class="docutils literal notranslate"><span class="pre">3.13</span></code>.</p></li>
+<li><p>Job B spins up an identical, isolated runner but injects Python version <code class="docutils literal notranslate"><span class="pre">3.14</span></code>.</p></li>
+</ul>
+</section>
+<section id="reusable-action-components-uses">
+<h3>Reusable Action Components (<code class="docutils literal notranslate"><span class="pre">uses:</span></code>)<a class="headerlink" href="#reusable-action-components-uses" title="Permalink to this heading">#</a></h3>
+<p>Steps utilizing the <code class="docutils literal notranslate"><span class="pre">uses:</span></code> syntax pull in predefined, modular plugins hosted on public repositories:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">actions/checkout&#64;v3</span></code> reaches out to the open-source repository behind that action, checks out your files under the temporary runner workspace path, and exposes your files to subsequent commands.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">actions/setup-python&#64;v4</span></code> modifies the underlying host variables to point securely to the targeted version defined in your execution matrix variables.</p></li>
+</ul>
+</section>
+<section id="native-makefile-execution-run">
+<h3>Native Makefile Execution (<code class="docutils literal notranslate"><span class="pre">run:</span></code>)<a class="headerlink" href="#native-makefile-execution-run" title="Permalink to this heading">#</a></h3>
+<p>Instead of typing lengthy initialization commands or hardcoding environment activation routes (e.g., <code class="docutils literal notranslate"><span class="pre">source</span> <span class="pre">env/bin/activate</span> <span class="pre">&amp;&amp;</span> <span class="pre">pip</span> <span class="pre">install</span> <span class="pre">-r</span> <span class="pre">requirements.txt</span></code>), the pipeline passes commands directly to the runner’s underlying shell using <code class="docutils literal notranslate"><span class="pre">run:</span></code>.</p>
+<p>Because your repository’s local <code class="docutils literal notranslate"><span class="pre">Makefile</span></code> handles target path structures and package installation logic natively, calling <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">env</span></code>, <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">update</span></code>, and <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">tests</span></code> forces the remote server to mirror your precise local verification steps identically.</p>
+</section>
+</section>
+<hr class="docutils" />
+<section id="operational-troubleshooting-matrix">
+<h2>4. Operational Troubleshooting Matrix<a class="headerlink" href="#operational-troubleshooting-matrix" title="Permalink to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>Issue Encountered</p></th>
+<th class="head text-left"><p>Root Cause Analysis</p></th>
+<th class="head text-left"><p>Corrective Action</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p><strong><code class="docutils literal notranslate"><span class="pre">make:</span> <span class="pre">command</span> <span class="pre">not</span> <span class="pre">found</span></code></strong></p></td>
+<td class="text-left"><p>The runner operating system configuration does not have the GNU Make compilation engine installed.</p></td>
+<td class="text-left"><p>Ensure your <code class="docutils literal notranslate"><span class="pre">runs-on:</span></code> target specifies a Linux distribution like <code class="docutils literal notranslate"><span class="pre">ubuntu-latest</span></code> or <code class="docutils literal notranslate"><span class="pre">ubuntu-24.04</span></code>, which includes development utilities by default.</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p><strong><code class="docutils literal notranslate"><span class="pre">Tab</span> <span class="pre">Error</span></code> / Makefile Failure</strong></p></td>
+<td class="text-left"><p>Your <code class="docutils literal notranslate"><span class="pre">Makefile</span></code> targets contain invalid white space modifications or spaces instead of standard tab characters.</p></td>
+<td class="text-left"><p>Re-indent the underlying commands inside your <code class="docutils literal notranslate"><span class="pre">Makefile</span></code> using single hard tab characters. Ensure your IDE does not auto-convert tabs to spaces.</p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p><strong>Missing Dependency Errors</strong></p></td>
+<td class="text-left"><p>Pytest or other third-party libraries throw an <code class="docutils literal notranslate"><span class="pre">ImportError</span></code> on the runner during execution.</p></td>
+<td class="text-left"><p>Ensure <code class="docutils literal notranslate"><span class="pre">pytest</span></code> and your other required modules are explicitly added to <code class="docutils literal notranslate"><span class="pre">requirements.txt</span></code>. Your <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">update</span></code> target must run inside the CI environment <em>before</em> the testing step executes.</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p><strong>Workflow Does Not Trigger</strong></p></td>
+<td class="text-left"><p>The configuration file uses an incorrect extension or resides in an invalid directory path.</p></td>
+<td class="text-left"><p>Confirm the workflow file is saved strictly as <code class="docutils literal notranslate"><span class="pre">.yml</span></code> or <code class="docutils literal notranslate"><span class="pre">.yaml</span></code> and is located explicitly within the <code class="docutils literal notranslate"><span class="pre">.github/workflows/</span></code> directory.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<hr class="docutils" />
+<section id="branch-strategy-workaround-testing-before-merging">
+<h2>5. Branch Strategy Workaround: Testing Before Merging<a class="headerlink" href="#branch-strategy-workaround-testing-before-merging" title="Permalink to this heading">#</a></h2>
+<p>{warning}
+<strong>The Default Branch Constraint:</strong> Certain GitHub Actions events and dashboard displays require the workflow configuration file to exist on your <strong>default branch</strong> (typically <code class="docutils literal notranslate"><span class="pre">main</span></code>) before they can execute or display properly. This constraint poses a challenge when developing a pipeline on an isolated feature branch: if you push a new workflow file only to a feature branch, manual testing buttons or certain automated triggers may not run until those changes are merged into <code class="docutils literal notranslate"><span class="pre">main</span></code>.</p>
+<section id="the-workaround-framework">
+<h3>The Workaround Framework<a class="headerlink" href="#the-workaround-framework" title="Permalink to this heading">#</a></h3>
+<p>To develop, iterate, and verify your continuous integration configurations safely without altering the default production code branch, execute this step-by-step fallback branching sequence:</p>
+<ol class="arabic">
+<li><p><strong>Commit a Minimal Placeholder First:</strong> While on your default <code class="docutils literal notranslate"><span class="pre">main</span></code> branch, commit a bare-minimum, blank workflow file containing the baseline execution constraints and the <code class="docutils literal notranslate"><span class="pre">workflow_dispatch</span></code> trigger to the repository path: <code class="docutils literal notranslate"><span class="pre">.github/workflows/verify-pipeline.yml</span></code>.</p></li>
+<li><p><strong>Create Your Feature Working Branch:</strong> Cut your active development branch from your updated repository baseline:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>git<span class="w"> </span>checkout<span class="w"> </span>-b<span class="w"> </span>feature-pipeline-integration
+</pre></div>
+</div>
+</li>
+<li><p><strong>Build and Expand the Configuration:</strong> Flesh out the comprehensive multi-environment execution block, adding your matrix profiles, dependency commands, lint steps, and <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">tests</span></code> triggers.</p></li>
+<li><p><strong>Push and Open a Pull Request:</strong> Push the updated configuration file to your remote feature branch. Because a version of the file already exists on <code class="docutils literal notranslate"><span class="pre">main</span></code>, GitHub will successfully recognize the file and trigger the workflow on the pull request interface. This allows you to verify your matrix build execution completely before merging your code.</p></li>
+</ol>
+</section>
+</section>
+<hr class="docutils" />
+<section id="dashboard-interface-navigation-and-manual-execution">
+<h2>6. Dashboard Interface Navigation and Manual Execution<a class="headerlink" href="#dashboard-interface-navigation-and-manual-execution" title="Permalink to this heading">#</a></h2>
+<p>Once your workflow file has been pushed to your remote repository, you can monitor pipeline execution and manually trigger test runs directly through the GitHub web UI.</p>
+<section id="running-workflows-manually">
+<h3>Running Workflows Manually<a class="headerlink" href="#running-workflows-manually" title="Permalink to this heading">#</a></h3>
+<p>Because your configuration file includes the <code class="docutils literal notranslate"><span class="pre">workflow_dispatch</span></code> event key, you can trigger test sweeps on-demand without changing your code:</p>
+<ol class="arabic simple">
+<li><p>Navigate to your repository homepage inside your web browser.</p></li>
+<li><p>Click the <strong>Actions</strong> tab located along the top horizontal navigation menu.</p></li>
+<li><p>Look at the left-hand sidebar menu and click on the explicit name of your workflow (e.g., <strong>Test Suite Automation</strong>).</p></li>
+<li><p>Locate the floating alert box on the right side of the screen and click the <strong>Run workflow</strong> dropdown button.</p></li>
+<li><p>Select the targeted development branch you want to test and click the green <strong>Run workflow</strong> button to launch the runners.</p></li>
+</ol>
+</section>
+<section id="auditing-output-logs-and-status-results">
+<h3>Auditing Output Logs and Status Results<a class="headerlink" href="#auditing-output-logs-and-status-results" title="Permalink to this heading">#</a></h3>
+<p>When a pipeline run begins, its status icon turns yellow to indicate that virtual runners are actively executing. To inspect your test outputs and debug any pipeline issues, follow this drill-down navigation sequence:</p>
+<ul class="simple">
+<li><p>Click the specific <strong>Commit Message Title</strong> of the active or completed run to open its high-level orchestration dashboard.</p></li>
+<li><p>The central dashboard layout displays your parallel jobs matrix. Click on a specific job node (e.g., <strong>Core Test Runner (Python 3.14)</strong>) to inspect its step executions.</p></li>
+<li><p>The right-hand screen area renders a live, scrollable terminal command console. Click on any individual step name (such as <strong>Execute Test Suite</strong>) to expand its logs. This exposes the exact terminal read-out from Pytest, making it easy to identify any failing tests.</p></li>
+</ul>
+<p>A green checkmark next to a step indicates success, while a red cross means a shell command returned a non-zero exit code. This halts subsequent steps immediately and flags the build as failed, providing an explicit gate for your repository.</p>
+</section>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="week3_testing_addon_3.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Practical Test Configuration Guide: Built-in Markers and Stream Mocking</p>
+      </div>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-github-actions-architectural-model">1. The GitHub Actions Architectural Model</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#comprehensive-blueprint-constructing-the-test-pipeline">2. Comprehensive Blueprint: Constructing the Test Pipeline</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#core-prerequisites-managing-the-remote-environment">Core Prerequisites: Managing the Remote Environment</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-by-step-code-walkthrough">3. Step-by-Step Code Walkthrough</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-orchestration-triggers-on">The Orchestration Triggers (<code class="docutils literal notranslate"><span class="pre">on:</span></code>)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#environmental-matrix-scaling-strategy-matrix">Environmental Matrix Scaling (<code class="docutils literal notranslate"><span class="pre">strategy.matrix</span></code>)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#reusable-action-components-uses">Reusable Action Components (<code class="docutils literal notranslate"><span class="pre">uses:</span></code>)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#native-makefile-execution-run">Native Makefile Execution (<code class="docutils literal notranslate"><span class="pre">run:</span></code>)</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#operational-troubleshooting-matrix">4. Operational Troubleshooting Matrix</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#branch-strategy-workaround-testing-before-merging">5. Branch Strategy Workaround: Testing Before Merging</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-workaround-framework">The Workaround Framework</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dashboard-interface-navigation-and-manual-execution">6. Dashboard Interface Navigation and Manual Execution</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#running-workflows-manually">Running Workflows Manually</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#auditing-output-logs-and-status-results">Auditing Output Logs and Status Results</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By UVA Data Science
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2022.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
